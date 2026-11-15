@@ -1,0 +1,228 @@
+.root {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  pointer-events: none;
+}
+
+.root[data-open="true"] {
+  pointer-events: auto;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.35);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.root[data-open="true"] .backdrop {
+  opacity: 1;
+}
+
+.drawer {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 100dvh;
+  background: var(--white);
+  color: var(--onyx);
+  transform: translateX(-100%);
+  visibility: hidden;
+  transition:
+    transform 0.35s var(--ease-drawer),
+    visibility 0s linear 0.35s;
+  --focus: var(--onyx);
+}
+
+.root[data-open="true"] .drawer {
+  transform: none;
+  visibility: visible;
+  transition: transform 0.35s var(--ease-drawer);
+}
+
+@media (min-width: 600px) {
+  .drawer {
+    width: 420px;
+    border-right: 1px solid #dfdfdf;
+  }
+}
+
+/* The close button sits exactly where the menu button was. */
+.top {
+  display: flex;
+  align-items: center;
+  flex: none;
+  height: calc(var(--announce-h) + var(--bar-h));
+  padding: var(--announce-h) 18px 0;
+}
+
+.close {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-left: -8px;
+}
+
+.close svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* ---------- Panels ---------- */
+
+.panels {
+  position: relative;
+  flex: 1;
+  overflow: hidden;
+}
+
+.main,
+.sub {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px 24px 28px;
+  transition: transform 0.35s var(--ease-drawer);
+}
+
+.panels[data-sub="true"] .main {
+  transform: translateX(-30%);
+}
+
+.sub {
+  background: var(--white);
+  transform: translateX(100%);
+}
+
+.panels[data-sub="true"] .sub {
+  transform: none;
+}
+
+/* ---------- Top-level items ---------- */
+
+.list {
+  display: grid;
+}
+
+.item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  padding: 10px 0;
+  font-size: 1.75rem;
+  font-weight: 400;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+  text-align: left;
+}
+
+.item svg {
+  width: 22px;
+  height: 22px;
+  opacity: 0.6;
+}
+
+.item:hover,
+.subLink:hover {
+  opacity: 0.6;
+}
+
+/* Staggered entrance, replayed every time the drawer opens. */
+.root[data-open="true"] .animated {
+  animation: itemIn 0.45s var(--ease-drawer) backwards;
+  animation-delay: calc(0.12s + var(--i, 0) * 0.05s);
+}
+
+@keyframes itemIn {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+}
+
+/* ---------- Utility links ---------- */
+
+.utility {
+  display: grid;
+  gap: 14px;
+  margin-top: auto;
+  padding-top: 28px;
+  font-size: 0.9rem;
+}
+
+.utilityLink {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 500;
+}
+
+.utilityLink svg {
+  width: 22px;
+  height: 22px;
+}
+
+.locale {
+  font-weight: 500;
+}
+
+.small {
+  font-size: 0.8rem;
+  color: var(--ink-soft);
+}
+
+/* ---------- Submenu ---------- */
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  align-self: flex-start;
+  margin-left: -6px;
+  padding: 6px 0;
+  font-size: 0.875rem;
+  color: rgba(0, 0, 0, 0.8);
+}
+
+.back svg {
+  width: 20px;
+  height: 20px;
+}
+
+.viewAll {
+  margin: 14px 0 6px;
+  font-size: 1.5rem;
+  line-height: 1.3;
+}
+
+.group {
+  padding-top: 20px;
+}
+
+.groupTitle {
+  margin-bottom: 6px;
+  font-size: 0.8rem;
+  font-weight: 500;
+  color: var(--ink-soft);
+}
+
+.subLink {
+  display: block;
+  padding: 7px 0;
+  font-size: 1rem;
+}
+
+@media (min-width: 1024px) {
+  .root {
+    display: none;
+  }
+}

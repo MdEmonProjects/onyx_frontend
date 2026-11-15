@@ -1,0 +1,353 @@
+/*
+ * Page offset for the fixed header. On the home page only the announcement
+ * bar takes space, so the hero runs up underneath the transparent menu bar.
+ */
+.spacer {
+  height: calc(var(--announce-h) + var(--bar-h));
+}
+
+.spacer[data-overlay="true"] {
+  height: var(--announce-h);
+}
+
+.header {
+  --fg: var(--vein);
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 50;
+  color: var(--fg);
+  background: var(--white);
+  border-bottom: 1px solid var(--line-light);
+  transition:
+    background-color 0.2s ease,
+    color 0.2s ease,
+    border-color 0.2s ease;
+}
+
+/* Transparent over the hero. Text colour follows the active slide. */
+.header[data-solid="false"] {
+  --fg: var(--onyx);
+  background: transparent;
+  border-bottom-color: transparent;
+  --focus: currentColor;
+}
+
+:global(html[data-hero-tone-mobile="light"]) .header[data-solid="false"] {
+  --fg: var(--white);
+}
+
+@media (min-width: 1024px) {
+  :global(html[data-hero-tone-desktop="dark"]) .header[data-solid="false"] {
+    --fg: var(--onyx);
+  }
+
+  :global(html[data-hero-tone-desktop="light"]) .header[data-solid="false"] {
+    --fg: var(--white);
+  }
+
+  /*
+   * Hovering the transparent header turns it white, as when a panel opens.
+   * The html prefix matches the specificity of the slide-tone rules above,
+   * so dark text wins even on slides that ask for light text.
+   */
+  :global(html) .header[data-solid="false"]:hover {
+    --fg: var(--vein);
+    background: var(--white);
+  }
+}
+
+/* ---------- Announcement marquee ---------- */
+
+.announcement {
+  height: var(--announce-h);
+  overflow: hidden;
+  background: var(--onyx);
+  color: var(--white);
+  font-size: 0.75rem;
+  font-weight: 300;
+  line-height: 1.2;
+  transition:
+    height 0.2s ease,
+    opacity 0.2s ease;
+}
+
+.header[data-scrolled="true"] .announcement {
+  height: 0;
+  opacity: 0;
+}
+
+.marquee {
+  display: flex;
+  width: max-content;
+  height: 100%;
+  animation: marquee 32s linear infinite;
+}
+
+.announcement:hover .marquee {
+  animation-play-state: paused;
+}
+
+.marqueeGroup {
+  display: flex;
+  flex-shrink: 0;
+  height: 100%;
+}
+
+.marqueeItem {
+  display: inline-flex;
+  align-items: center;
+  height: 100%;
+  padding-inline: clamp(40px, 6vw, 80px);
+  white-space: nowrap;
+  transition: color 0.2s ease;
+}
+
+.marqueeItem:hover {
+  color: var(--band-soft);
+}
+
+@keyframes marquee {
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* ---------- Menu bar ---------- */
+
+.bar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: var(--bar-h);
+  padding-inline: 18px;
+}
+
+.primary {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.primary :global(a) {
+  font-size: 1.1rem;
+}
+
+.menuButton {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-left: -8px;
+}
+
+.menuButton svg,
+.icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.nav {
+  display: none;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.icon {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  transition: opacity 0.15s ease;
+}
+
+.icon:hover {
+  opacity: 0.6;
+}
+
+.desktopOnly {
+  display: none;
+}
+
+.count {
+  position: absolute;
+  top: 3px;
+  right: 0;
+  min-width: 16px;
+  height: 16px;
+  padding: 0 4px;
+  border-radius: 999px;
+  background: var(--sard);
+  color: var(--white);
+  font-size: 0.65rem;
+  font-weight: 600;
+  line-height: 16px;
+  text-align: center;
+}
+
+.count[data-empty="true"] {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .bar {
+    padding-inline: clamp(32px, 3.34vw, 64px);
+  }
+
+  .primary :global(a) {
+    font-size: 1.3rem;
+  }
+
+  .menuButton {
+    display: none;
+  }
+
+  .nav {
+    position: absolute;
+    top: 0;
+    left: 50%;
+    display: flex;
+    height: 100%;
+    transform: translateX(-50%);
+  }
+
+  .navList {
+    display: flex;
+    align-items: stretch;
+    gap: clamp(24px, 2.5vw, 48px);
+    height: 100%;
+  }
+
+  .navItem {
+    display: flex;
+    height: 100%;
+  }
+
+  .navLink {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    height: 100%;
+    font-size: clamp(14px, calc(100vw / 96), 18px);
+    font-weight: 350;
+    white-space: nowrap;
+  }
+
+  /* Underline that grows from the centre on hover or while a panel is open. */
+  .navLink::after {
+    content: "";
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: calc(50% - 0.95em);
+    height: 1px;
+    background: currentColor;
+    transform: scaleX(0);
+    transition: transform 0.25s ease;
+  }
+
+  .navLink:hover::after,
+  .navLink[data-active="true"]::after {
+    transform: scaleX(1);
+  }
+
+  .actions {
+    gap: 20px;
+  }
+
+  .desktopOnly {
+    display: grid;
+  }
+
+  .icon svg {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+/* ---------- Dropdown panel (desktop) ---------- */
+
+.mega {
+  display: none;
+}
+
+@media (min-width: 1024px) {
+  .mega {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    display: block;
+    background: var(--white);
+    color: var(--vein);
+    border-top: 1px solid var(--line-light);
+    box-shadow: 0 28px 40px -28px rgba(0, 0, 0, 0.28);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-6px);
+    transition:
+      opacity 0.2s ease,
+      transform 0.25s ease,
+      visibility 0s linear 0.25s;
+  }
+
+  .mega[data-open="true"] {
+    opacity: 1;
+    visibility: visible;
+    transform: none;
+    transition:
+      opacity 0.2s ease,
+      transform 0.25s ease;
+  }
+
+  .megaInner {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 240px));
+    justify-content: center;
+    gap: 32px clamp(32px, 5vw, 96px);
+    padding: 36px clamp(32px, 3.34vw, 64px) 48px;
+    animation: megaIn 0.3s ease both;
+  }
+
+  .megaTitle {
+    margin-bottom: 14px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--ink-soft);
+  }
+
+  .megaLinks {
+    display: grid;
+    gap: 10px;
+  }
+
+  .megaLink {
+    display: grid;
+    gap: 2px;
+    font-size: 0.95rem;
+    font-weight: 400;
+    transition: color 0.15s ease;
+  }
+
+  .megaLink:hover {
+    color: var(--sard);
+  }
+
+  .megaNote {
+    font-size: 0.8rem;
+    color: var(--ink-soft);
+    line-height: 1.4;
+  }
+}
+
+@keyframes megaIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+}

@@ -1,0 +1,25 @@
+.logo {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.42em;
+  font-family: var(--font-logo);
+  font-stretch: 125%;
+  font-weight: 640;
+  font-size: 1.3rem;
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.logo[data-size="large"] {
+  font-size: clamp(2rem, 3.6vw, 3.25rem);
+}
+
+.q {
+  display: grid;
+  place-items: center;
+  width: 1.3em;
+  height: 1.75em;
+  border: 0.085em solid currentColor;
+  border-radius: 0.38em;
+  font-size: 0.86em;
+}
