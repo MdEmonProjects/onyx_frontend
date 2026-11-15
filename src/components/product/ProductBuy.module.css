@@ -1,0 +1,620 @@
+/*
+ * Product page, top half: gallery on the left, a column of white cards on
+ * the right, and a bar that pins "Add to cart" to the bottom of the window.
+ */
+
+.root {
+  /* Width of the right column; the bottom bar lines its button up with it. */
+  --panel-w: clamp(380px, 37vw, 530px);
+  --gap: 32px;
+  --card-r: 16px;
+  --rail-w: clamp(64px, 7.5vw, 108px);
+  --ok: #1a7a4a;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--panel-w);
+  gap: var(--gap);
+  align-items: start;
+}
+
+/* ---------- Gallery ---------- */
+
+.gallery {
+  position: sticky;
+  top: calc(var(--bar-h) + 24px);
+  padding-left: calc(var(--rail-w) + 16px);
+}
+
+/* Thumbnails sit beside the picture and scroll if there are many. */
+.rail {
+  position: absolute;
+  inset: 0 auto 0 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: var(--rail-w);
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+.rail::-webkit-scrollbar {
+  display: none;
+}
+
+.thumb {
+  position: relative;
+  display: grid;
+  flex: none;
+  place-items: center;
+  aspect-ratio: 1;
+  overflow: hidden;
+  border: 1px solid var(--line-light);
+  border-radius: 12px;
+  background: var(--white);
+  transition: border-color 0.15s;
+}
+
+.thumb:hover {
+  border-color: var(--ink-soft);
+}
+
+.thumb[aria-current="true"] {
+  border-color: var(--vein);
+  box-shadow: inset 0 0 0 0.5px var(--vein);
+}
+
+.thumb:focus-visible {
+  outline-offset: -2px;
+}
+
+.thumbArt {
+  height: 76%;
+  width: auto;
+}
+
+.stageWrap {
+  position: relative;
+  aspect-ratio: 1;
+  max-height: calc(100svh - var(--bar-h) - 48px);
+  width: 100%;
+  overflow: hidden;
+  border-radius: var(--card-r);
+  background: var(--white);
+}
+
+.stage {
+  display: flex;
+  height: 100%;
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+}
+
+.stage::-webkit-scrollbar {
+  display: none;
+}
+
+.stage:focus-visible {
+  outline-offset: -3px;
+  border-radius: var(--card-r);
+}
+
+.slide {
+  position: relative;
+  display: grid;
+  flex: 0 0 100%;
+  place-items: center;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+}
+
+.photo {
+  object-fit: cover;
+}
+
+.art {
+  height: 78%;
+  width: auto;
+  filter: drop-shadow(0 26px 30px rgba(36, 38, 40, 0.26));
+}
+
+.tag {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1.4;
+  color: var(--band);
+  background: var(--sard);
+}
+
+/* Which colour the drawn case is showing. */
+.chip {
+  position: absolute;
+  bottom: 12px;
+  left: 12px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 4px 10px 4px 4px;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.3;
+  background: var(--band);
+}
+
+.chipDot {
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(36, 38, 40, 0.18);
+}
+
+.dots {
+  position: absolute;
+  bottom: 8px;
+  left: 50%;
+  display: flex;
+  transform: translateX(-50%);
+}
+
+.dot {
+  display: grid;
+  place-items: center;
+  height: 24px;
+  padding-inline: 4px;
+}
+
+.dot::before {
+  content: "";
+  width: 5px;
+  height: 5px;
+  border-radius: 999px;
+  background: rgba(36, 38, 40, 0.22);
+  transition:
+    width 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.dot[aria-current="true"]::before {
+  width: 16px;
+  background: var(--vein);
+}
+
+/* ---------- Right column ---------- */
+
+.panel {
+  display: grid;
+  gap: 16px;
+  font-size: 0.875rem;
+  line-height: 1.45;
+}
+
+.card {
+  border-radius: var(--card-r);
+  background: var(--white);
+}
+
+.cardHead {
+  display: grid;
+  place-items: center;
+  height: 48px;
+  border-bottom: 1px solid var(--line-light);
+  font-weight: 500;
+}
+
+.cardBody {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+}
+
+/* Name, material, price, stock */
+
+.meta {
+  display: grid;
+  gap: 4px;
+}
+
+.titleRow {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.name {
+  font-size: 1.5rem;
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+
+.rating {
+  display: inline-flex;
+  flex: none;
+  align-items: center;
+  gap: 4px;
+  margin-top: 4px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.rating svg {
+  fill: currentColor;
+}
+
+.rating span {
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.rating:hover {
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.price {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-top: 4px;
+  font-size: 1.125rem;
+  font-weight: 500;
+}
+
+.priceNote {
+  font-size: 0.75rem;
+  font-weight: 400;
+  color: var(--ink-soft);
+}
+
+.stock {
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+.stock strong {
+  margin-right: 2px;
+  font-weight: 700;
+  color: var(--ok);
+}
+
+.stock strong[data-out="true"] {
+  color: var(--sard);
+}
+
+/* Device picker error */
+
+.error {
+  margin-top: 8px;
+  font-size: 0.8125rem;
+  color: var(--sard);
+}
+
+/* Option groups */
+
+.label {
+  margin-bottom: 10px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+}
+
+.types {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.type {
+  display: grid;
+  justify-items: center;
+  align-content: start;
+  width: 92px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.typeTile {
+  display: grid;
+  place-items: center;
+  width: 72px;
+  height: 72px;
+  margin-bottom: 8px;
+  border: 1px solid var(--line-light);
+  border-radius: 12px;
+  transition: border-color 0.15s;
+}
+
+.type:hover .typeTile {
+  border-color: var(--ink-soft);
+}
+
+.type > input:checked + .typeTile {
+  border-color: var(--vein);
+  box-shadow: inset 0 0 0 0.5px var(--vein);
+}
+
+.type > input:focus-visible + .typeTile {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.typeName {
+  font-size: 0.8125rem;
+  font-weight: 500;
+  line-height: 1.25;
+}
+
+.typePrice {
+  margin-top: 2px;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+.typeNote {
+  margin-top: 12px;
+  font-size: 0.75rem;
+  color: var(--ink-soft);
+}
+
+.pills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 40px;
+  padding: 0 14px 0 4px;
+  border: 1px solid var(--line-light);
+  border-radius: 999px;
+  font-size: 0.8125rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.pill:hover {
+  border-color: var(--ink-soft);
+}
+
+.pill:has(input:checked) {
+  border-color: var(--vein);
+  box-shadow: inset 0 0 0 0.5px var(--vein);
+}
+
+.pill:has(input:focus-visible) {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.pillDot {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  box-shadow: inset 0 0 0 1px rgba(36, 38, 40, 0.18);
+}
+
+/* Add to cart (in the card and in the bottom bar) */
+
+.add {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  height: 48px;
+  padding: 0 24px;
+  border-radius: 20px;
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--band);
+  background: var(--vein);
+  transition: background-color 0.15s;
+}
+
+.add:hover {
+  background: var(--onyx);
+}
+
+.add:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.add svg {
+  width: 18px;
+  height: 18px;
+}
+
+/* Description / Specification */
+
+.accordions {
+  padding: 4px 16px;
+}
+
+.acc + .acc {
+  border-top: 1px solid var(--line-light);
+}
+
+.acc summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  min-height: 52px;
+  font-weight: 500;
+  list-style: none;
+  cursor: pointer;
+}
+
+.acc summary::-webkit-details-marker {
+  display: none;
+}
+
+.acc summary:focus-visible {
+  outline-offset: 0;
+  border-radius: 6px;
+}
+
+/* A plus that folds into a minus when the row is open. */
+.plus {
+  position: relative;
+  flex: none;
+  width: 12px;
+  height: 12px;
+  margin-right: 4px;
+}
+
+.plus::before,
+.plus::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 1.5px;
+  margin-top: -0.75px;
+  background: currentColor;
+  transition: transform 0.2s ease;
+}
+
+.plus::after {
+  transform: rotate(90deg);
+}
+
+.acc[open] .plus::after {
+  transform: none;
+}
+
+.accBody {
+  padding-bottom: 16px;
+  line-height: 1.6;
+  color: var(--ink-soft);
+}
+
+.specs {
+  display: grid;
+  font-size: 0.8125rem;
+}
+
+.specs > div {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.42fr) minmax(0, 1fr);
+  gap: 4px 16px;
+  padding-block: 10px;
+  border-top: 1px solid var(--line-light);
+}
+
+.specs > div:first-child {
+  padding-top: 0;
+  border-top: 0;
+}
+
+.specs > div:last-child {
+  padding-bottom: 0;
+}
+
+.specs dt {
+  font-weight: 500;
+  color: var(--vein);
+}
+
+/* ---------- Bottom bar ---------- */
+
+.bar {
+  position: fixed;
+  inset: auto 0 0;
+  z-index: 40;
+  padding-block: 8px max(8px, env(safe-area-inset-bottom));
+  border-top: 1px solid var(--line-light);
+  background: color-mix(in srgb, var(--white) 90%, transparent);
+  backdrop-filter: blur(14px);
+  transform: translateY(100%);
+  visibility: hidden;
+  transition:
+    transform 0.35s var(--ease-drawer),
+    visibility 0s 0.35s;
+}
+
+.bar[data-show="true"] {
+  transform: none;
+  visibility: visible;
+  transition:
+    transform 0.35s var(--ease-drawer),
+    visibility 0s;
+}
+
+.barInner {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) var(--panel-w);
+  gap: var(--gap);
+  align-items: center;
+}
+
+.barInfo {
+  display: grid;
+  font-size: 0.875rem;
+  line-height: 1.35;
+}
+
+.barName {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.barPrice {
+  font-weight: 500;
+}
+
+/* ---------- Small screens ---------- */
+
+@media (max-width: 960px) {
+  .root {
+    --gap: 16px;
+  }
+
+  .layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  /* One picture at a time: swipe, or tap the dots. */
+  .gallery {
+    position: static;
+    padding-left: 0;
+  }
+
+  .rail {
+    display: none;
+  }
+
+  .stageWrap {
+    max-height: none;
+  }
+
+  .barInner {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr);
+  }
+}
+
+@media (max-width: 520px) {
+  .barInner {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .barInfo {
+    display: none;
+  }
+}

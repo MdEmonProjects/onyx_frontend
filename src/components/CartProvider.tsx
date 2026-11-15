@@ -7,13 +7,15 @@ export type CartLine = {
   finishId: string;
   /** Empty when the shopper has not picked an iPhone yet. */
   modelId?: string;
+  /** Case build picked on the product page (see caseTypes in catalog.ts). */
+  caseTypeId?: string;
   qty: number;
 };
 
 type Cart = {
   lines: CartLine[];
   count: number;
-  add: (line: Omit<CartLine, "qty">) => void;
+  add: (line: Omit<CartLine, "qty">, qty?: number) => void;
 };
 
 const CartContext = createContext<Cart | null>(null);
@@ -26,16 +28,17 @@ const CartContext = createContext<Cart | null>(null);
 export function CartProvider({ children }: { children: React.ReactNode }) {
   const [lines, setLines] = useState<CartLine[]>([]);
 
-  const add = useCallback((line: Omit<CartLine, "qty">) => {
+  const add = useCallback((line: Omit<CartLine, "qty">, qty = 1) => {
     setLines((current) => {
       const match = current.findIndex(
         (l) =>
           l.productId === line.productId &&
           l.finishId === line.finishId &&
-          l.modelId === line.modelId,
+          l.modelId === line.modelId &&
+          l.caseTypeId === line.caseTypeId,
       );
-      if (match === -1) return [...current, { ...line, qty: 1 }];
-      return current.map((l, i) => (i === match ? { ...l, qty: l.qty + 1 } : l));
+      if (match === -1) return [...current, { ...line, qty }];
+      return current.map((l, i) => (i === match ? { ...l, qty: l.qty + qty } : l));
     });
   }, []);
 

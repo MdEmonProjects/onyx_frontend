@@ -281,6 +281,12 @@ export type Product = {
    * When set, the card shows the photo instead of the drawn case.
    */
   image?: string;
+  /** Photos for the product page gallery, inside /public. */
+  gallery?: string[];
+  /** Product page description. Falls back to the collection's text below. */
+  description?: string;
+  /** Set to true to show "Sold out" and switch off the add-to-cart button. */
+  soldOut?: boolean;
 };
 
 export const products: Product[] = [
@@ -400,4 +406,136 @@ export function fromPrice(collection: CollectionId): number {
 /** 2450 -> "৳2,450" */
 export function taka(amount: number): string {
   return `৳${amount.toLocaleString("en-US")}`;
+}
+
+/* ---------- Product page: devices, case types, specs ---------- */
+
+export type Device = { id: string; name: string; camera?: Camera };
+export type Brand = { id: string; name: string; devices: Device[] };
+
+/**
+ * Brand -> model picker on the product page. Apple uses the iPhone list
+ * above. The Samsung and Google lists are SAMPLES: keep only the phones
+ * you actually make cases for.
+ */
+export const brands: Brand[] = [
+  {
+    id: "apple",
+    name: "Apple",
+    devices: models.map((m) => ({ id: m.id, name: m.name, camera: m.camera })),
+  },
+  {
+    id: "samsung",
+    name: "Samsung",
+    devices: [
+      { id: "galaxy-s26-ultra", name: "Galaxy S26 Ultra" },
+      { id: "galaxy-s26-plus", name: "Galaxy S26+" },
+      { id: "galaxy-s26", name: "Galaxy S26" },
+      { id: "galaxy-s25-ultra", name: "Galaxy S25 Ultra" },
+    ],
+  },
+  {
+    id: "google",
+    name: "Google",
+    devices: [
+      { id: "pixel-10-pro-xl", name: "Pixel 10 Pro XL" },
+      { id: "pixel-10-pro", name: "Pixel 10 Pro" },
+      { id: "pixel-10", name: "Pixel 10" },
+    ],
+  },
+];
+
+export type CaseType = {
+  id: string;
+  name: string;
+  note: string;
+  /** Added to the product's base price. */
+  extra: number;
+};
+
+/** Sample case builds and surcharges. Adjust to the real range. */
+export const caseTypes: CaseType[] = [
+  { id: "slim", name: "Slim Case", note: "Thin and light for everyday carry.", extra: 0 },
+  { id: "impact", name: "Impact Case", note: "Raised edges and cushioned corners.", extra: 500 },
+  { id: "impact-magsafe", name: "Impact Case with MagSafe", note: "Impact build with a magnet ring.", extra: 900 },
+];
+
+/** Spec rows for the product page. SAMPLE values: check each one. */
+const collectionSpecs: Record<CollectionId, [string, string][]> = {
+  banded: [
+    ["Material", "Stone-finish polycarbonate shell, TPU bumper"],
+    ["Finish", "Banded, no two cases alike"],
+    ["Lining", "Microfibre"],
+  ],
+  aramid: [
+    ["Material", "Aramid fibre, unidirectional weave"],
+    ["Finish", "Matte, dry touch"],
+    ["Lining", "None (bare fibre)"],
+  ],
+  leather: [
+    ["Material", "Full-grain leather over a polycarbonate frame"],
+    ["Finish", "Ages and darkens with use"],
+    ["Lining", "Microfibre"],
+  ],
+  clear: [
+    ["Material", "Anti-yellowing polycarbonate, TPU edges"],
+    ["Finish", "Gloss clear"],
+    ["Lining", "None"],
+  ],
+  everyday: [
+    ["Material", "Soft-touch polycarbonate"],
+    ["Finish", "Matte"],
+    ["Lining", "Microfibre"],
+  ],
+};
+
+export function productSpecs(product: Product): [string, string][] {
+  return [
+    ...collectionSpecs[product.collection],
+    ["Wireless charging", "Supported"],
+    ["Buttons", "Covered, tactile click"],
+    ["Camera", "Raised lip around the lens"],
+    ["In the box", "Case, cleaning cloth"],
+  ];
+}
+
+/** Description shown on the product page. SAMPLE copy: rewrite it per collection or per product. */
+const collectionDescriptions: Record<CollectionId, string> = {
+  banded:
+    "Our signature finish, veined like the stone we are named after. No two colours band the same way, so every case looks a little different.",
+  aramid: "Woven aramid fibre: thin and light, with a dry technical feel in the hand.",
+  leather: "Full-grain leather over a rigid frame. It darkens and softens with use, so it looks better the longer you carry it.",
+  clear: "A clear shell that shows off the phone's own colour, with a MagSafe ring built in.",
+  everyday: "A soft-touch matte shell for everyday carry: easy to grip and easy to wipe clean.",
+};
+
+export function productDescription(product: Product): string {
+  return product.description ?? collectionDescriptions[product.collection];
+}
+
+/** Sample photos for the gallery while products have no shoot of their own. */
+const sampleGallery = [
+  "/images/10001.jpeg",
+  "/images/10002.jpeg",
+  "/images/10003.jpeg",
+  "/images/10004.jpeg",
+  "/images/10005.jpeg",
+];
+
+export function productGallery(product: Product): string[] {
+  if (product.gallery?.length) return product.gallery;
+  const start = products.indexOf(product) % sampleGallery.length;
+  return [0, 1, 2].map((i) => sampleGallery[(start + i) % sampleGallery.length]);
+}
+
+export function getProduct(id: string): Product | undefined {
+  return products.find((p) => p.id === id);
+}
+
+/** Same collection first, then the rest. */
+export function relatedProducts(product: Product, count = 4): Product[] {
+  const others = products.filter((p) => p.id !== product.id);
+  const same = others.filter((p) => p.collection === product.collection);
+  const rest = others.filter((p) => p.collection !== product.collection);
+  return [...same, ...rest].slice(0, count);
 }

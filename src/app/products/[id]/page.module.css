@@ -1,0 +1,39 @@
+/* Stone ground; the gallery and the cards on it are white. */
+.top {
+  padding-block: clamp(16px, 2vw, 24px) clamp(32px, 4vw, 56px);
+  background: var(--band);
+}
+
+.crumbs ol {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 0 0 clamp(16px, 2vw, 24px);
+  padding: 0;
+  list-style: none;
+  font-size: 0.8125rem;
+  color: var(--ink-soft);
+}
+
+.crumbs li + li::before {
+  content: "/";
+  margin-right: 6px;
+  opacity: 0.6;
+}
+
+.crumbs a:hover {
+  color: var(--vein);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.crumbs [aria-current] {
+  color: var(--vein);
+}
+
+/* ---------- You may also like ---------- */
+
+.related {
+  padding-block: 0 clamp(56px, 7vw, 96px);
+  background: var(--band);
+}

@@ -1,0 +1,178 @@
+.root {
+  position: relative;
+}
+
+/* ---------- Trigger ---------- */
+
+/* One bar split in two: brand | model, arrow on the far right. */
+.trigger {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  align-items: center;
+  width: 100%;
+  height: 40px;
+  padding: 0 36px 0 0;
+  border: 1px solid var(--line-light);
+  border-radius: 10px;
+  font: inherit;
+  font-size: 0.8125rem;
+  color: var(--vein);
+  background: var(--white);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.half {
+  overflow: hidden;
+  padding: 0 12px;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+/* Thin divider between the two halves. */
+.half + .half {
+  border-left: 1px solid var(--line-light);
+}
+
+.half[data-empty="true"] {
+  color: var(--ink-soft);
+}
+
+.trigger:hover,
+.trigger[aria-expanded="true"] {
+  border-color: var(--vein);
+}
+
+.trigger[data-invalid="true"] {
+  border-color: var(--sard);
+}
+
+.trigger:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.trigger svg {
+  position: absolute;
+  top: 50%;
+  right: 12px;
+  width: 16px;
+  height: 16px;
+  transform: translateY(-50%);
+  transition: transform 0.2s;
+}
+
+.trigger[aria-expanded="true"] svg {
+  transform: translateY(-50%) rotate(180deg);
+}
+
+/* ---------- Panel ---------- */
+
+.panel {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 30;
+  display: grid;
+  gap: 16px;
+  padding: 20px 16px 16px;
+  border: 1px solid var(--line-light);
+  border-radius: 16px;
+  background: var(--white);
+  box-shadow: 0 24px 48px -20px rgba(36, 38, 40, 0.3);
+  animation: drop 0.18s ease-out;
+}
+
+@keyframes drop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+}
+
+.brands {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 8px;
+}
+
+.pill {
+  min-height: 36px;
+  padding: 0 20px;
+  border: 1px solid var(--line-light);
+  border-radius: 999px;
+  font: inherit;
+  font-size: 0.875rem;
+  color: var(--vein);
+  background: var(--white);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.pill:hover {
+  border-color: var(--ink-soft);
+}
+
+.pill[aria-pressed="true"] {
+  border-color: var(--vein);
+  box-shadow: inset 0 0 0 0.5px var(--vein);
+}
+
+.pill:focus-visible,
+.model:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+.list {
+  display: grid;
+  gap: 10px;
+  max-height: 340px;
+  margin: 0;
+  padding: 2px 6px 2px 2px;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  list-style: none;
+  scrollbar-width: thin;
+  scrollbar-color: var(--ink-soft) transparent;
+}
+
+.model {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  height: 52px;
+  padding: 0 16px;
+  border: 1px solid var(--line-light);
+  border-radius: 12px;
+  font: inherit;
+  font-size: 0.9375rem;
+  text-align: left;
+  color: var(--vein);
+  background: var(--white);
+  cursor: pointer;
+  transition: border-color 0.15s;
+}
+
+.model:hover {
+  border-color: var(--ink-soft);
+}
+
+.model[aria-pressed="true"] {
+  border-color: var(--vein);
+  box-shadow: inset 0 0 0 0.5px var(--vein);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .panel {
+    animation: none;
+  }
+
+  .trigger svg {
+    transition: none;
+  }
+}
