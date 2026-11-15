@@ -8,10 +8,6 @@ import "@fontsource/hind-siliguri/bengali-500.css";
 import "@fontsource/hind-siliguri/bengali-600.css";
 import "./globals.css";
 
-import { CartProvider } from "@/components/CartProvider";
-import { Footer } from "@/components/Footer";
-import { Header } from "@/components/Header";
-import { ScrollEffects } from "@/components/ScrollEffects";
 import { site } from "@/lib/site";
 
 export const metadata: Metadata = {
@@ -41,15 +37,8 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
     // <html>/<body> before React loads; this silences only those two tags.
     <html lang="en" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <CartProvider>
-          <a href="#main" className="skip">
-            Skip to content
-          </a>
-          <Header />
-          <main id="main">{children}</main>
-          <Footer />
-          <ScrollEffects />
-        </CartProvider>
+        {/* The shop's header/footer live in (site)/layout.tsx, so /admin can have its own frame. */}
+        {children}
       </body>
     </html>
   );

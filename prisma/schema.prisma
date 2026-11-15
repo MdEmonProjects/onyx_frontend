@@ -1,0 +1,53 @@
+// Onyx Q database schema.
+//
+// Runs on Supabase Postgres. Connection strings come from .env.local:
+// POSTGRES_PRISMA_URL for the app, POSTGRES_URL_NON_POOLING for migrations
+// (see prisma.config.ts). To move to another Postgres host, change those
+// two; for MySQL etc. also change `provider` and the adapter in src/lib/db.ts.
+//
+// Supabase exposes the public schema through its Data API, so every table
+// here gets row-level security switched on in its migration (with no
+// policies, the API can't read it; Prisma connects as the owner and can).
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum Role {
+  SUPER_ADMIN
+  ADMIN
+}
+
+/// Staff who can sign in to /admin. There is no public sign-up: the first
+/// super admin comes from `npm run db:seed`.
+model User {
+  id           String    @id @default(cuid())
+  email        String    @unique
+  name         String
+  /// scrypt hash, see src/lib/auth/password.ts. Never the plain password.
+  passwordHash String
+  role         Role      @default(ADMIN)
+  lastLoginAt  DateTime?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+
+  sessions Session[]
+}
+
+/// A signed-in browser. The cookie holds a random token; only its SHA-256
+/// hash is stored here, so a leaked database can't be used to log in.
+model Session {
+  id        String   @id
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import { ProductBuy } from "@/components/product/ProductBuy";
+import { ProductSkeleton } from "@/components/product/ProductSkeleton";
 import { ProductReviews } from "@/components/product/ProductReviews";
 import { RelatedRail } from "@/components/product/RelatedRail";
 import { ReviewsProvider } from "@/components/product/ReviewsProvider";
@@ -40,8 +41,10 @@ export default function ProductPage({ params }: PageProps<"/products/[id]">) {
   return (
     <Suspense
       fallback={
-        <div className={styles.top} aria-busy="true">
-          <div className="wrap" />
+        <div className={styles.top}>
+          <div className="wrap">
+            <ProductSkeleton />
+          </div>
         </div>
       }
     >
@@ -58,7 +61,7 @@ async function ProductDetails({ params }: Pick<PageProps<"/products/[id]">, "par
   const collection = collections.find((c) => c.id === product.collection);
 
   return (
-    <ReviewsProvider productId={product.id}>
+    <ReviewsProvider key={product.id} productId={product.id}>
       <div className={styles.top}>
         <div className="wrap">
           <nav aria-label="Breadcrumb" className={styles.crumbs}>

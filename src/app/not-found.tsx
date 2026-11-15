@@ -1,8 +1,14 @@
 import Link from "next/link";
+import { SiteShell } from "@/components/SiteShell";
 
+/*
+ * Renders inside the bare root layout (unmatched URLs and notFound() calls
+ * both land here), so it brings the shop's header and footer itself.
+ */
 export default function NotFound() {
   return (
-    <section className="onDark" style={{ background: "var(--onyx)" }}>
+    <SiteShell>
+      <section className="onDark" style={{ background: "var(--onyx)" }}>
       <div
         className="wrap"
         style={{ paddingBlock: "clamp(96px, 16vw, 200px)", display: "grid", gap: 24, justifyItems: "start" }}
@@ -15,6 +21,7 @@ export default function NotFound() {
           Go to the home page
         </Link>
       </div>
-    </section>
+      </section>
+    </SiteShell>
   );
 }

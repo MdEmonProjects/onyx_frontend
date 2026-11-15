@@ -56,3 +56,5 @@ show the "We can't find that page" screen in `src/app/not-found.tsx`.
 The cart lives in memory (`src/components/CartProvider.tsx`) and resets
 on refresh. Replace its state with your real cart when the backend is
 ready.
+
+

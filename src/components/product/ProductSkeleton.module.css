@@ -1,0 +1,121 @@
+/*
+ * Placeholder blocks for the product page while it streams in. The layout
+ * comes from ProductBuy.module.css; this file only draws the grey bones.
+ */
+
+/* Read out by screen readers, not shown. */
+.srOnly {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.bone {
+  display: block;
+  border-radius: 8px;
+  background: var(--honed);
+}
+
+/* A soft light sweep across every bone, in step. */
+@media (prefers-reduced-motion: no-preference) {
+  .bone {
+    background: linear-gradient(100deg, var(--honed) 40%, var(--band) 50%, var(--honed) 60%) var(--honed);
+    background-size: 200% 100%;
+    background-attachment: fixed;
+    animation: sweep 1.4s linear infinite;
+  }
+}
+
+@keyframes sweep {
+  from {
+    background-position: 100% 0;
+  }
+  to {
+    background-position: -100% 0;
+  }
+}
+
+.crumbs {
+  height: 14px;
+  width: min(260px, 60%);
+  margin: 0 0 clamp(16px, 2vw, 24px);
+}
+
+/* The big picture and the thumbnails keep their white card. */
+.stage {
+  display: grid;
+  place-items: center;
+}
+
+.case {
+  height: 70%;
+  aspect-ratio: 9 / 19;
+  border-radius: 28px;
+}
+
+.thumbCase {
+  height: 64%;
+  aspect-ratio: 9 / 19;
+  border-radius: 6px;
+}
+
+.head {
+  height: 14px;
+  width: 110px;
+}
+
+.title {
+  height: 28px;
+  width: 75%;
+}
+
+.line {
+  height: 14px;
+  width: 55%;
+}
+
+.price {
+  height: 24px;
+  width: 30%;
+  margin-top: 8px;
+}
+
+.label {
+  height: 12px;
+  width: 90px;
+}
+
+.swatches {
+  display: flex;
+  gap: 10px;
+}
+
+.swatch {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+}
+
+.field {
+  height: 44px;
+  border-radius: 10px;
+}
+
+.tiles {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 8px;
+}
+
+.tile {
+  height: 88px;
+  border-radius: 12px;
+}
+
+.button {
+  height: 52px;
+  border-radius: 999px;
+}

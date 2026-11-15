@@ -28,9 +28,9 @@ export function ReviewsProvider({ productId, children }: { productId: string; ch
     // A "cancelled" flag instead of AbortController: aborting in cleanup (which
     // Strict Mode does on every dev mount) surfaces as an AbortError in the
     // Next dev overlay even when caught. Stale responses are simply ignored.
+    // The product page keys this provider by product id, so moving to another
+    // product remounts it with fresh loading/error state.
     let cancelled = false;
-    setLoading(true);
-    setError(false);
     fetch(`/api/reviews?product=${encodeURIComponent(productId)}`)
       .then((res) => (res.ok ? res.json() : Promise.reject(new Error(`HTTP ${res.status}`))))
       .then((data: { reviews: ProductReview[] }) => {
